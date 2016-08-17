@@ -59,7 +59,7 @@ class Main extends PluginBase implements Listener{
             $type = $cfg->get("ban-op-hacker-type");
             $p->setOp(false);
             $this->ban($p, $type, $r);
-            $this->getServer()->broadcastMessage($cfg->get("ban-op-hacker-broadcast"));
+            $this->getServer()->broadcastMessage(str_replace("{PLAYER}", $p->getName(), $cfg->get("ban-op-hacker-broadcast"));
           }
         }
       }
