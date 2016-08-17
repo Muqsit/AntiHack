@@ -1,5 +1,5 @@
 <?php
-namespace AntiHack;
+namespace Muqsit;
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\entity\{EntityDamageEvent, EntityDamageByEntityEvent};
@@ -9,8 +9,10 @@ use pocketmine\utils\Config;
 class Main extends PluginBase implements Listener{
 
   public function onEnable(){
-    $this->saveDefaultConfig();
-    $this->getServer()->getScheduler()->scheduleRepeatingTask(new banOPHackers($this, $this->interval), 20);
+		@mkdir($this->getDataFolder());
+		$this->saveDefaultConfig();
+		$this->reloadConfig();
+    $this->getServer()->getScheduler()->scheduleRepeatingTask(new banOPHackers($this, 20), 20);
     $this->getServer()->getPluginManager()->registerEvents($this, $this);
   }
   
@@ -37,21 +39,21 @@ class Main extends PluginBase implements Listener{
         if($p instanceof Player && $damager instanceof Player){
           $weapon = $damager->getInventory()->getItemInHand();
           foreach($weapon->getEnchantments() as $en){
-            if($en->getLevel() > $cfg->get("max-enchantment-level");
-              $damager->getInventory()->removeItem($weapon);
-              $type = $cfg->get("ban-enchant-hacker-type");
-              $this->ban($damager, $type, $why);
+            if($en->getLevel() > $cfg->get("max-enchantment-level")){
+            	$damager->getInventory()->removeItem($weapon);
+            	$type = $cfg->get("ban-enchant-hacker-type");
+            	$this->ban($damager, $type, $why);
             }
           }
         }
       }
     }
   }
-  
+
   public function opProtection(){
+    $cfg = $this->getConfig();
     $ops = array($cfg->get("ops"));
     $sensitive = array_map('strtolower', $ops);
-    $cfg = $this->getConfig();
     if($cfg->get("ban-op-hackers") === "true"){
       foreach($this->getServer()->getPlayers() as $p){
         if($p->isOP()){
