@@ -9,9 +9,9 @@ use pocketmine\utils\Config;
 class Main extends PluginBase implements Listener{
 
   public function onEnable(){
-		@mkdir($this->getDataFolder());
-		$this->saveDefaultConfig();
-		$this->reloadConfig();
+    @mkdir($this->getDataFolder());
+    $this->saveDefaultConfig();
+    $this->reloadConfig();
     $this->getServer()->getScheduler()->scheduleRepeatingTask(new banOPHackers($this, 20), 20);
     $this->getServer()->getPluginManager()->registerEvents($this, $this);
   }
