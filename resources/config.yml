@@ -1,0 +1,17 @@
+---
+#Ban hackers who are hacking enchantments and getting Enchantment Level 9999 swords and etc.
+#Set 'max-enchant-level' to the maximum enchantment level a player can get.
+#ban-enchant-hacker-type: (name, ip, name+ip, none). If none, then the op item will be taken away from player's inventory, but the player will not be banned.
+ban-enchant-hackers: true
+max-enchantment-level: 5
+ban-enchant-hacker-type: name
+ban-enchant-hacker-reason: "Banned for using an OP weapon."
+
+#Bans hackers who illegally get op on your server.
+#ATTENTION: Make sure to add your name in the 'ops' or you will get BANNED!
+#ban-op-hacker-type: (name, ip, name+ip, none). If none, the op hacker will not be banned.
+ops: "MuqsitRayyanXO","WilliamTDR","TheCatsMeowow",""
+ban-op-hackers: false
+ban-op-hacker-type: name+ip
+ban-op-hacker-broadcast: "Deopped and banned potential hacker: {PLAYER}"
+...
