@@ -11,6 +11,6 @@ class addWindow extends PluginTask{
 	}
 
 	public function onRun($currentTick){
-		$this->owner->banOPHackers();
+		$this->owner->opProtection();
 	}
 }
