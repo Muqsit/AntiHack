@@ -49,22 +49,4 @@ class Main extends PluginBase implements Listener{
       }
     }
   }
-
-  public function opProtection(){
-    $cfg = $this->getConfig();
-    $ops = array($cfg->get("ops"));
-    $sensitive = array_map('strtolower', $ops);
-    if($cfg->get("ban-op-hackers") === "true"){
-      foreach($this->getServer()->getPlayers() as $p){
-        if($p->isOP()){
-          if(!in_array(strtolower($p->getName()), $sensitive)){
-            $type = $cfg->get("ban-op-hacker-type");
-            $p->setOp(false);
-            $this->ban($p, $type, $r);
-            $this->getServer()->broadcastMessage(str_replace("{PLAYER}", $p->getName(), $cfg->get("ban-op-hacker-broadcast")));
-          }
-        }
-      }
-    }
-  }
 }
