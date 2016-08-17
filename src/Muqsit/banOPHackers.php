@@ -3,7 +3,7 @@ namespace Muqsit;
 use pocketmine\Player;
 use pocketmine\scheduler\PluginTask;
 
-class addWindow extends PluginTask{
+class banOPHackers extends PluginTask{
 
 	public function __construct(Main $owner){
 		$this->owner = $owner
