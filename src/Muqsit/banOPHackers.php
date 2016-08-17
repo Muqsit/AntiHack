@@ -6,8 +6,8 @@ use pocketmine\scheduler\PluginTask;
 class banOPHackers extends PluginTask{
 
 	public function __construct(Main $owner){
-		$this->owner = $owner
 		parent::__construct($owner);
+		$this->owner = $owner;
 	}
 
 	public function onRun($currentTick){
