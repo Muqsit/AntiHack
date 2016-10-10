@@ -7,6 +7,32 @@ use pocketmine\{Server, Player};
 use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener{
+  
+  public function OnEnable(){
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        @mkdir($this->getDataFolder());
+        $config = ($this->getDataFolder()."/config.yml");
+        if(!file_exists($config)){
+            $config = new Config($this->getDataFolder()."/config.yml", Config::YAML, array(
+                "combat.time" => "15",
+                "heal.players" => "true",
+                "combat.quit.amount" => "1000",
+                "enable.skills" => "true",
+                "kill.level.up.message" => "You leveled up in Combat!",
+                "death.message" => "You died",
+                "fall.level.up.message" => "You leveled up in Acrobatics!",
+                "mined.level.up.message" => "You leveled up in Mining!",
+                "excavated.level.up.message" => "You leveled up in Excavation!",
+                ""
+        ));
+            $this->saveResource($config);
+        }
+    }
+    
+    public function onLoad(){
+      @mkdir($this->getDataFolder());
+      @mkdir($this->getDataFolder()."Players/");
+	}
 
   public function onEnable(){
     @mkdir($this->getDataFolder());
@@ -29,10 +55,34 @@ class Main extends PluginBase implements Listener{
     }
   }
   
+  public function getpfile(Player $player){
+    return $this->getDataFolder()."Players/".$player->getName().".yml";
+  }
+  
+  public function onJoin(PlayerJoinEvent $event){
+    $player = $event->getPlayer();
+    $file = ($this->getDataFolder()."Players/".$player->getName().".yml");
+    $this->pfile = new Config($this->getDataFolder()."Players/".$player->getName().".yml", Config::YAML);
+    $data = $this->pfile->get("ban-points", "ip-address");
+    if(!file_exists($file)){
+		  $this->pfile->set("ban-points", 0);
+		  $this->pfile->set("ip-address", $this->getServer()->getPlayer()->getAddress());
+		  $this->pfile->save();
+    }
+		  if(!$this->pfile->exists($data)){
+        $this->pfile->set("ban-points", 0);
+        $this->pfile->set("ip-address", $this->getServer()->getPlayer()->getAddress());
+		    $this->pfile->save();
+      }
+  }
+  
   public function onEntityDamage(EntityDamageEvent $e){
     $p = $event->getEntity();
     $cfg = $this->getConfig();
+    $pfile = $this->getpfile();
     $why = $cfg->get("ban-enchant-hacker-reason");
+    $chance = $pfile->get("ban-points");
+    $max = $cfg->get("max-ban-points");
     if($cfg->get("ban-enchant-hackers") === "true"){
       if($e instanceof EntityDamageByEntityEvent){
         $damager = $e->getDamager();
@@ -42,7 +92,9 @@ class Main extends PluginBase implements Listener{
             if($en->getLevel() > $cfg->get("max-enchantment-level")){
             	$damager->getInventory()->removeItem($weapon);
             	$type = $cfg->get("ban-enchant-hacker-type");
+              if($chance === $max){
             	$this->ban($damager, $type, $why);
+              }
             }
           }
         }
