@@ -7,6 +7,11 @@ use pocketmine\{Server, Player};
 use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener{
+    
+    public function onLoad(){
+      @mkdir($this->getDataFolder());
+      @mkdir($this->getDataFolder()."Players/");
+    }
 
   public function onEnable(){
     @mkdir($this->getDataFolder());
@@ -29,10 +34,34 @@ class Main extends PluginBase implements Listener{
     }
   }
   
+  public function getpfile(Player $player){
+    return $this->getDataFolder()."Players/".$player->getName().".yml";
+  }
+  
+  public function onJoin(PlayerJoinEvent $event){
+    $player = $event->getPlayer();
+    $file = ($this->getDataFolder()."Players/".$player->getName().".yml");
+    $this->pfile = new Config($this->getDataFolder()."Players/".$player->getName().".yml", Config::YAML);
+    $data = $this->pfile->get("ban-points", "ip-address");
+    if(!file_exists($file)){
+		  $this->pfile->set("ban-points", 0);
+		  $this->pfile->set("ip-address", $this->getServer()->getPlayer()->getAddress());
+		  $this->pfile->save();
+    }
+		  if(!$this->pfile->exists($data)){
+        $this->pfile->set("ban-points", 0);
+        $this->pfile->set("ip-address", $this->getServer()->getPlayer()->getAddress());
+		    $this->pfile->save();
+      }
+  }
+  
   public function onEntityDamage(EntityDamageEvent $e){
     $p = $event->getEntity();
     $cfg = $this->getConfig();
+    $pfile = $this->getpfile();
     $why = $cfg->get("ban-enchant-hacker-reason");
+    $chance = $pfile->get("ban-points");
+    $max = $cfg->get("max-ban-points");
     if($cfg->get("ban-enchant-hackers") === "true"){
       if($e instanceof EntityDamageByEntityEvent){
         $damager = $e->getDamager();
@@ -42,7 +71,9 @@ class Main extends PluginBase implements Listener{
             if($en->getLevel() > $cfg->get("max-enchantment-level")){
             	$damager->getInventory()->removeItem($weapon);
             	$type = $cfg->get("ban-enchant-hacker-type");
+              if($chance === $max){
             	$this->ban($damager, $type, $why);
+              }
             }
           }
         }
