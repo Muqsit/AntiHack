@@ -7,32 +7,11 @@ use pocketmine\{Server, Player};
 use pocketmine\utils\Config;
 
 class Main extends PluginBase implements Listener{
-  
-  public function OnEnable(){
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        @mkdir($this->getDataFolder());
-        $config = ($this->getDataFolder()."/config.yml");
-        if(!file_exists($config)){
-            $config = new Config($this->getDataFolder()."/config.yml", Config::YAML, array(
-                "combat.time" => "15",
-                "heal.players" => "true",
-                "combat.quit.amount" => "1000",
-                "enable.skills" => "true",
-                "kill.level.up.message" => "You leveled up in Combat!",
-                "death.message" => "You died",
-                "fall.level.up.message" => "You leveled up in Acrobatics!",
-                "mined.level.up.message" => "You leveled up in Mining!",
-                "excavated.level.up.message" => "You leveled up in Excavation!",
-                ""
-        ));
-            $this->saveResource($config);
-        }
-    }
     
     public function onLoad(){
       @mkdir($this->getDataFolder());
       @mkdir($this->getDataFolder()."Players/");
-	}
+    }
 
   public function onEnable(){
     @mkdir($this->getDataFolder());
